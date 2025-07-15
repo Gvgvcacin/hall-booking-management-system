@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hall Booking Management</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+
+    #logo-container { 
+      background-image: url('https://gvgvc.ac.in/images/resource/about.jpg'); 
+      background-size: cover; 
+      background-position: center; 
+      background-repeat: no-repeat;
+      padding-top: 20px;
+      padding-bottom: 20px;
+    }
+
+    .border-container, .container {
+      display: none;
+      border: 5px solid #007bff;
+      border-radius: 10px;
+      margin: 20px auto;
+      padding: 10px;
+      max-width: 500px;
+      background: lightgreen;
+    }
+
+    .container.active {
+      display: block;
+    }
+
+    .logo-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .logo-container img {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    button {
+      width: 100%;
+      padding: 11px;
+      margin: 10px 0;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 7px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .calendar-month {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .day {
+      width: 50px;
+      height: 50px;
+      margin: 5px;
+      text-align: center;
+      line-height: 50px;
+      background-color: white;
+      border: 1px solid #ccc;
+      cursor: pointer;
+    }
+
+    .booked {
+      background-color: green;
+      color: white;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Home Page -->
+  <div class="border-container" id="logo-container" style="display: block;">
+    <h2>Sri G.V.G. Visalakshi College for Women</h2>
+    <div class="logo-container">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnRpMzOaQ9AhWaD8MZWYwmK5DXCh2msiwNBA&s" alt="GVG Logo" />
+    </div>
+    <h2>Hall Booking Management System</h2>
+    <button onclick="showPage('registration-container')">Register</button>
+    <button onclick="showPage('login-container')">Login</button>
+    <button onclick="showPage('calendar-container')">Hall Availability</button>
+  </div>
+
+  <!-- Register Form -->
+  <div class="container" id="registration-container">
+    <h2>Register</h2>
+    <label>Username:</label>
+    <input type="text" id="register-username" placeholder="Username" />
+    <label>Email:</label>
+    <input type="email" id="register-email" placeholder="Email" />
+    <label>Password:</label>
+    <input type="password" id="register-password" placeholder="Password" />
+    <button onclick="register()">Register</button>
+  </div>
+
+  <!-- Login Form -->
+  <div class="container" id="login-container">
+    <h2>Login</h2>
+    <label>Username:</label>
+    <input type="text" id="login-username" placeholder="Username" />
+    <label>Password:</label>
+    <input type="password" id="login-password" placeholder="Password" />
+    <button onclick="login()">Login</button>
+  </div>
+
+  <!-- Booking Form -->
+  <div class="container" id="booking-container">
+    <h2>Book a Hall</h2>
+    <label>Select Date:</label>
+    <input type="date" id="booking-date" />
+    <label>Select Hall:</label>
+    <select id="booking-hall">
+      <option value="Conference 1">Conference 1</option>
+      <option value="Conference 2">Conference 2</option>
+    </select>
+    <label>Select Department:</label>
+    <select id="booking-department">
+      <option value="IT">Information Technology</option>
+      <option value="CS">Computer Science</option>
+      <option value="AI">Artificial Intelligence</option>
+      <option value="M">Maths</option>
+      <option value="Tamil">Tamil</option>
+    </select>
+    <label>Check-in Time:</label>
+    <input type="time" id="checkin-time" />
+    <label>Check-out Time:</label>
+    <input type="time" id="checkout-time" />
+    <button onclick="bookHall()">Book a Hall</button>
+  </div>
+
+  <!-- Calendar -->
+  <div class="container" id="calendar-container">
+    <button onclick="showPage('logo-container')">Back to Home</button>
+    <h2>Hall Availability Calendar</h2>
+    <div id="calendar"></div>
+  </div>
+
+  <!-- JavaScript -->
+  <script>
+    function showPage(pageId) {
+      document.querySelectorAll('.container, .border-container').forEach(el => el.style.display = 'none');
+      document.getElementById(pageId).style.display = 'block';
+    }
+
+    function register() {
+      const username = document.getElementById("register-username").value.trim();
+      const email = document.getElementById("register-email").value.trim();
+      const password = document.getElementById("register-password").value.trim();
+
+      if (!username || !email || !password) {
+        alert("❗ Please fill in all fields to register.");
+        return;
+      }
+
+      alert("✅ Registration successful!");
+      showPage('login-container');
+    }
+
+    function login() {
+      const username = document.getElementById("login-username").value.trim();
+      const password = document.getElementById("login-password").value.trim();
+
+      if (!username || !password) {
+        alert("❗ Please enter both username and password.");
+        return;
+      }
+
+      alert("✅ Login successful!");
+      showPage('booking-container');
+    }
+
+    function bookHall() {
+      const date = document.getElementById("booking-date").value;
+      const department = document.getElementById("booking-department").value;
+      const hall = document.getElementById("booking-hall").value;
+      const checkin = document.getElementById("checkin-time").value;
+      const checkout = document.getElementById("checkout-time").value;
+
+      if (!date || !department || !hall || !checkin || !checkout) {
+        alert("❗ Please fill in all fields.");
+        return;
+      }
+
+      if (checkout <= checkin) {
+        alert("❗ Check-out time should be after check-in time.");
+        return;
+      }
+
+      const scriptURL = "https://script.google.com/macros/s/AKfycbzN-_gXe9FEh9UI-iLzk7vHdC9m7F2nxokmTnz-eFj94O1jIILvJoJJcQwV1SZVcUqz/exec";
+
+      fetch(scriptURL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          date: date,
+          department: department,
+          hall: hall,
+          checkin: checkin,
+          checkout: checkout
+        })
+      })
+      .then(res => res.text())
+      .then(data => {
+        alert("✅ Booking sent to Google Sheet successfully!");
+        showPage('calendar-container');
+      })
+      .catch(err => {
+        alert("❌ Error: " + err);
+      });
+    }
+
+    function generateCalendar() {
+      let calendar = document.getElementById("calendar");
+      calendar.innerHTML = "";
+      let currentDate = new Date();
+      for (let i = 0; i < 12; i++) {
+        let monthDiv = document.createElement("div");
+        let month = new Date(currentDate.getFullYear(), currentDate.getMonth() + i, 1);
+        monthDiv.innerHTML = `<h3>${month.toLocaleString('default', { month: 'long', year: 'numeric' })}</h3>`;
+        let monthDays = document.createElement("div");
+        monthDays.classList.add("calendar-month");
+        let daysInMonth = new Date(month.getFullYear(), month.getMonth() + 1, 0).getDate();
+        for (let d = 1; d <= daysInMonth; d++) {
+          let dayDiv = document.createElement("div");
+          dayDiv.classList.add("day");
+          dayDiv.innerText = d;
+          monthDays.appendChild(dayDiv);
+        }
+        monthDiv.appendChild(monthDays);
+        calendar.appendChild(monthDiv);
+      }
+    }
+
+    window.onload = generateCalendar;
+  </script>
+</body>
+</html>
